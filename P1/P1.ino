@@ -30,6 +30,7 @@ int per100; // TODO find out how many times data is measured in 100ms
 uint8_t ID = 125; // UNIQUE IDENTIFIER FOR DEVICE
 double maximum = 0;
 double temp;
+
  
 
 unsigned long starttime, endtime;
@@ -96,6 +97,8 @@ void loop() {
        maximum = temp;
       }
     }
+
+    Serial.print("ID: %d\tForce: %f", ID, maximum);
     // TODO DATA LOGGING
     
     maximum = 0.0;
