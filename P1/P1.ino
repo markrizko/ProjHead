@@ -1,18 +1,6 @@
-/*********************************************************
-  Author: Elias Santistevan @ SparkFun Electronics
-  Date: 5/2021
-  Library repository can be found here:
-  https://github.com/sparkfun/SparkFun_KX13X_Arduino_Library
-
-  Basic example for reading back accelerometer values using I2C.
-
-  This code is released under the [MIT License](http://opensource.org/licenses/MIT).
-
-  Please review the LICENSE.md file included with this example. If you have any questions
-  or concerns with licensing, please contact techsupport@sparkfun.com.
-
-  Distributed as-is; no warranty is given.
-*******************************************************/
+/*
+  Project Headshot Prototype 1 Arduino Code
+*/
 
 #include <Wire.h>
 #include "SparkFun_Qwiic_KX13X.h"
@@ -25,21 +13,14 @@ QwiicKX134 kxAccel; // Uncomment this if using the KX134 - check your board
 outputData myData; // This will hold the accelerometer's output.
 double force; // force is constantly updated 
 double T = 5.0; // T is threshold value
-int per100; // TODO find out how many times data is measured in 100ms
+int per100 = 5; // output data rate is 50Hz, so 5 measures per 100ms
 
 uint8_t ID = 125; // UNIQUE IDENTIFIER FOR DEVICE
 double maximum = 0;
 double temp;
 
- 
-
-unsigned long starttime, endtime;
 
 void setup() {
-    //Serial.begin(115200);
-    //pinMode(10, OUTPUT);
-    //SPI.begin();
-    //digitalWrite(10,HIGH);
   while (!Serial) {
     delay(50);
   }
@@ -74,6 +55,9 @@ void loop() {
   myData = kxAccel.getAccelData();
 
   force = sqrt((pow(myData.xData, 2) + pow(myData.yData, 2) + pow(myData.zData, 2)));
+
+  
+// basic threshold logging
 //  if (force > 3.0){
 //    Serial.println("Force above threshold: ");
 //    Serial.print(force);
@@ -81,29 +65,27 @@ void loop() {
 //    Serial.println();
 //  }
 
-  // USE THIS LOOP TO COUNT # measures in 100ms
-  starttime = millis();
-    endtime = starttime;
-    while((endtime - starttime) <= 100){
-      
 
-      endtime = millis();
-    }
-
+// advanced threshold logging 
   if (force > T){
     for (int i = 0; i < per100; ++i){
       temp = sqrt((pow(myData.xData, 2) + pow(myData.yData, 2) + pow(myData.zData, 2)));
       if (maximum < temp){
        maximum = temp;
       }
+      delay(20);
     }
-
-    Serial.print("ID: %d\tForce: %f", ID, maximum);
+    
+    Serial.print("\nID: ");
+    Serial.print(ID);
+    Serial.print("\tForce: ");
+    Serial.print(maximum);
     // TODO DATA LOGGING
     
     maximum = 0.0;
   }
 
+  // advanced threshold logging pseudocode
     /* if (force > T){
    *   log for 100ms - loop and evaluate max
    *   after 100ms
