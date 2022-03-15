@@ -12,7 +12,7 @@ QwiicKX134 kxAccel; // Uncomment this if using the KX134 - check your board
 //if unsure.
 outputData myData; // This will hold the accelerometer's output.
 double force; // force is constantly updated 
-double T = 5.0; // T is threshold value
+double Th = 5.0; // T is threshold value
 int per100 = 5; // output data rate is 50Hz, so 5 measures per 100ms
 
 uint8_t ID = 125; // UNIQUE IDENTIFIER FOR DEVICE
@@ -67,8 +67,9 @@ void loop() {
 
 
 // advanced threshold logging 
-  if (force > T){
-    for (int i = 0; i < per100; ++i){
+  if (force > Th){
+    maximum = force;
+    for (int i = 0; i < per100-1; ++i){
       temp = sqrt((pow(myData.xData, 2) + pow(myData.yData, 2) + pow(myData.zData, 2)));
       if (maximum < temp){
        maximum = temp;
@@ -81,8 +82,6 @@ void loop() {
     Serial.print("\tForce: ");
     Serial.print(maximum);
     // TODO DATA LOGGING
-    
-    maximum = 0.0;
   }
 
   // advanced threshold logging pseudocode
