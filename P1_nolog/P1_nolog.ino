@@ -12,7 +12,8 @@ QwiicKX134 kxAccel; // Uncomment this if using the KX134 - check your board
 //if unsure.
 outputData myData; // This will hold the accelerometer's output.
 double force; // force is constantly updated 
-double Th = 5.0; // T is threshold value
+double mTh = 3.0; // mTh is min threshold value for subconcussive impact
+double MTh = 6.0; // MTh is threshold for concussive impact
 int per100 = 5; // output data rate is 50Hz, so 5 measures per 100ms
 
 uint8_t ID = 125; // UNIQUE IDENTIFIER FOR DEVICE
@@ -67,8 +68,9 @@ void loop() {
 
 
 // advanced threshold logging 
-  if (force > Th){
+  if (force > mTh){
     maximum = force;
+    
     for (int i = 0; i < per100-1; ++i){
       temp = sqrt((pow(myData.xData, 2) + pow(myData.yData, 2) + pow(myData.zData, 2)));
       if (maximum < temp){
@@ -76,8 +78,14 @@ void loop() {
       }
       delay(20);
     }
-    
-    Serial.print("\nID: ");
+
+    if (maximum < MTh){
+      Serial.print("\nSubconcussive Impact Logged\n");
+    }
+    else{
+      Serial.print("\nConcussive Impact Logged\n");
+    }
+    Serial.print("ID: ");
     Serial.print(ID);
     Serial.print("\tForce: ");
     Serial.print(maximum);
