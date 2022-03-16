@@ -44,7 +44,7 @@ void setup() {
   else
     Serial.println("Ready.");
 
-   EEPROM.init(); // TODO MOVE TO SETUP()
+   EEPROM.init(); 
 
   if ( !kxAccel.initialize(DEFAULT_SETTINGS)) { // Loading default settings.
     Serial.println("Could not initialize the chip.");
@@ -118,18 +118,18 @@ void loop() {
     EEPROM.put(EEPROM_IDX , ID);
     //Serial.print("EEPROM Written...\nAttempting to read...\n");
     //EEPROM.get(EEPROM_IDX, test_ID);
-    Serial.print("Test ID: ");
-    Serial.print(test_ID);
+    //Serial.print("Test ID: ");
+    //Serial.print(test_ID);
     EEPROM_IDX = EEPROM_IDX + sizeof(ID);
     EEPROM.put(EEPROM_IDX, maximum);
     //EEPROM.get(EEPROM_IDX, test_maximum);
-    Serial.print("\tTest Force: ");
-    Serial.print(test_maximum);
+    //Serial.print("\tTest Force: ");
+    //Serial.print(test_maximum);
     EEPROM_IDX = EEPROM_IDX + sizeof(maximum);
     num_of_stored_dataset ++;
     EEPROM.put(0,num_of_stored_dataset);
 
   //delay(20); // Delay should be 1/ODR (Output Data Rate), default is 50Hz
   delay(2.5); // delay for 400Hz
-
+  }
 }
