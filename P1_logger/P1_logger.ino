@@ -44,7 +44,7 @@ void setup() {
   else
     Serial.println("Ready.");
 
-   EEPROM.init(); 
+   EEPROM.init(); // initialize EEPROM
 
   if ( !kxAccel.initialize(DEFAULT_SETTINGS)) { // Loading default settings.
     Serial.println("Could not initialize the chip.");
@@ -60,17 +60,6 @@ void setup() {
   else
     Serial.println("Output data rate set.");
 
-  // kxAccel.setRange(KX132_RANGE16G);
-  // kxAccel.setRange(KX134_RANGE32G); // For a larger range uncomment
-    /*EEPROM.init();
-    EEPROM.get(EEPROM_IDX, test_ID);
-    Serial.print("Test ID:");
-    Serial.print(test_ID);
-    EEPROM_IDX = EEPROM_IDX + sizeof(ID);
-    EEPROM.get(EEPROM_IDX, test_maximum);
-    Serial.print("Test max:");
-    Serial.print(test_maximum);
-    */
 }
 
 
@@ -79,16 +68,6 @@ void loop() {
   myData = kxAccel.getAccelData();
 
   force = sqrt((pow(myData.xData, 2) + pow(myData.yData, 2) + pow(myData.zData, 2)));
-
- 
-// basic threshold logging
-//  if (force > 3.0){
-//    Serial.println("Force above threshold: ");
-//    Serial.print(force);
-//    Serial.print("g ");
-//    Serial.println();
-//  }
-
 
 // advanced threshold logging
   if (force > mTh){
@@ -113,18 +92,10 @@ void loop() {
     Serial.print(ID);
     Serial.print("\tForce: ");
     Serial.print(maximum);
-    // TODO DATA LOGGING
-    //Serial.print("\nWriting to EEPROM...\n");
+    Serial.print("\nWriting to EEPROM...\n");
     EEPROM.put(EEPROM_IDX , ID);
-    //Serial.print("EEPROM Written...\nAttempting to read...\n");
-    //EEPROM.get(EEPROM_IDX, test_ID);
-    //Serial.print("Test ID: ");
-    //Serial.print(test_ID);
     EEPROM_IDX = EEPROM_IDX + sizeof(ID);
     EEPROM.put(EEPROM_IDX, maximum);
-    //EEPROM.get(EEPROM_IDX, test_maximum);
-    //Serial.print("\tTest Force: ");
-    //Serial.print(test_maximum);
     EEPROM_IDX = EEPROM_IDX + sizeof(maximum);
     num_of_stored_dataset ++;
     EEPROM.put(0,num_of_stored_dataset);

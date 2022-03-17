@@ -1,5 +1,6 @@
 /*
   Project Headshot Prototype 1 Arduino Code
+  This code is the same as the logger, first revision that DOES NOT LOG DATA
 */
 
 #include <Wire.h>

@@ -1,5 +1,6 @@
 /* 
   Data reading test for Prototype1
+  Reads all data stored into EEPROM during operation of the prototype
 */
 #include <Wire.h>
 #include "SparkFun_Qwiic_KX13X.h"
