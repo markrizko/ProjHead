@@ -58,13 +58,14 @@ double maximum = 0; // variable to store maximum value calculated over 100ms int
 double temp; // temporary accel value for evaluating max in logging window
 
 // gyroscope data correlating to maximum accel value
-int Gxmax; 
-int Gymax;
-int Gzmax;
+double Gxmax; 
+double Gymax;
+double Gzmax;
 // temporary gyroscope values
-int Gxtemp;
-int Gytemp;
-int Gztemp;
+double Gxtemp;
+double Gytemp;
+double Gztemp;
+double conv = 180 / PI;
 // helper variables for EEPROM storage
 int num_of_stored_dataset = 0;
 int EEPROM_IDX = 0 + sizeof(num_of_stored_dataset);
@@ -74,6 +75,11 @@ double test_maximum = 0;
 // helper function for converting double to string for bluetooth communication
 String double2string(double n, int ndec) {
     String r = "";
+    if (n < 0){
+      n = n*-1.0;
+      r+="-";
+    }
+    
 
     int v = n;
     r += v;     // whole number part
@@ -293,12 +299,16 @@ void loop() {
   if (force > mTh){
     Serial.println("Impact detected");
     maximum = force;
+    Gxtemp = gyro.gyro.x * conv;
+    Gytemp = gyro.gyro.y * conv;
+    Gztemp = gyro.gyro.z * conv;
 
     for (int i = 0; i < per100-1; ++i){
       temp = sqrt((pow(event.acceleration.x, 2) + pow(event.acceleration.y, 2) + pow(event.acceleration.z, 2))) / gravity;
-      Gxtemp = (int)gyro.gyro.x;
-      Gytemp = (int)gyro.gyro.y;
-      Gztemp = (int)gyro.gyro.z;
+
+//      Serial.println(Gxtemp);
+//      Serial.println(Gytemp);
+//      Serial.println(Gztemp);
       if (maximum < temp){
         maximum = temp;
         Gxmax = Gxtemp;
@@ -331,26 +341,34 @@ void loop() {
     // Serial.print("\tGyro Z:");
     // Serial.print((int)gyro.gyro.z);
 
+
     Serial.print("\nWriting to EEPROM...\n");
     EEPROM.put(EEPROM_IDX , ID);
     EEPROM_IDX = EEPROM_IDX + sizeof(ID);
     EEPROM.put(EEPROM_IDX, maximum);
     EEPROM_IDX = EEPROM_IDX + sizeof(maximum);
-    EEPROM.put(EEPROM_IDX, (int)gyro.gyro.x);
-    EEPROM_IDX = EEPROM_IDX + sizeof(int);
-    EEPROM.put(EEPROM_IDX, (int)gyro.gyro.y);
-    EEPROM_IDX = EEPROM_IDX + sizeof(int);
-    EEPROM.put(EEPROM_IDX, (int)gyro.gyro.z);
-    EEPROM_IDX = EEPROM_IDX + sizeof(int);
+    EEPROM.put(EEPROM_IDX, Gxmax);
+    EEPROM_IDX = EEPROM_IDX + sizeof(double);
+    EEPROM.put(EEPROM_IDX, Gymax);
+    EEPROM_IDX = EEPROM_IDX + sizeof(double);
+    EEPROM.put(EEPROM_IDX, Gzmax);
+    EEPROM_IDX = EEPROM_IDX + sizeof(double);
     num_of_stored_dataset ++;
     EEPROM.put(0,num_of_stored_dataset);
 
     Serial.print("\nData Transmitting Through BLE...\n");
     String maxx = double2string(maximum, 2);
-    b_force.writeValue(String(maxx) + "g");
-    b_rot_x.writeValue(String(Gxmax) + "dps");
-    b_rot_y.writeValue(String(Gymax) + "dps");
-    b_rot_z.writeValue(String(Gzmax) + "dps");
+    String Gx = double2string(Gxtemp, 2);
+    String Gy = double2string(Gytemp, 2);
+    String Gz = double2string(Gztemp, 2);
+//    String Gx = String(Gxtemp, 2);
+//    String Gy = String(Gytemp, 2);
+//    String Gz = String(Gztemp, 2);
+    Serial.println(Gx);
+    b_force.writeValue(maxx + "g");
+    b_rot_x.writeValue(Gx + "dps");
+    b_rot_y.writeValue(Gy + "dps");
+    b_rot_z.writeValue(Gz + "dps");
     
 
 

@@ -1,0 +1,26 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "C:/Users/newms/Documents/Arduino/**",
+                "C:/Users/newms/Documents/ArduinoData/**",
+                "C:/Users/newms/Documents/ArduinoData/packages/SparkFun/hardware/apollo3/2.2.0/libraries/**",
+                "C:/Users/newms/Documents/ArduinoData/packages/SparkFun/hardware/apollo3/2.2.0/libraries/EEPROM/src/**",
+                "C:/Users/newms/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src/*"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "windowsSdkVersion": "10.0.18362.0",
+            "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.27.29110/bin/Hostx64/x64/cl.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-msvc-x64"
+        }
+    ],
+    "version": 4
+}
